@@ -3,7 +3,6 @@ public class Usuario {
 	private int id;
 	private String user;
 	private String password;
-	
 	public Usuario(String u,String p,int id) {
 		//Buscar en el fichero de usuarios si este usuario existe
 		this.user = u;
