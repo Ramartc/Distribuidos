@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.ServerSocket;
@@ -30,6 +31,18 @@ public class Servidor {
 					usuario=dis.readUTF();
 					dos.writeUTF("CONTRASEÑA: ");
 					contraseña=dis.readUTF();
+					
+					Usuario u = buscarUsuario(usuario,contraseña);
+					if(u != null) {
+						dos.writeUTF("Bienvenido "+ u.getUser());
+						System.out.println("SE HA CONECTADO:"+  u.getUser());
+						dos.writeUTF("close");
+					}
+					else if(u == null) {
+						dos.writeUTF("close");
+						System.out.println("SE HA DESCONECTADO:" + u.getUser());
+					}
+					dos.writeUTF("close");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -39,5 +52,27 @@ public class Servidor {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}	
+	}
+	
+	public static Usuario buscarUsuario(String usuario,String password) {
+		BufferedReader br = null;
+		Usuario u = null;
+		try {
+			br =new BufferedReader(new FileReader("bd/usuarios.csv"));
+			String line = br.readLine(); // Nos la saltamos son las cabeceras
+			line = br.readLine();
+			while (line!=null) {
+				 String [] partes = line.split(",");				 
+				 if(partes[1].equals(usuario) && partes[2].equals(password)) {
+
+					  u = new Usuario(usuario,password,Integer.parseInt(partes[0]));
+					 }
+				 line = br.readLine();
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return u;
 	}
 }
