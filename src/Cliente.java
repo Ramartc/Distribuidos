@@ -26,10 +26,15 @@ public class Cliente {
 					if(servidor.equals("close")) {
 						conexion=false;					
 					}
+					else {if(servidor.contains("Introduce")) {
+						System.out.println(servidor);	
+						outSocket.writeUTF(entrada.next());
+					}	
 					else {
 						System.out.println(servidor);		
-						outSocket.writeUTF(entrada.next());
-					}				
+						
+					}
+					}
 				}
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block

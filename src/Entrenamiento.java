@@ -1,13 +1,15 @@
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Entrenamiento {
 	private Date fecha;
 	private String nombre;
-	private int repeticiones;
+	private ArrayList<Integer> repeticiones;
 	private int series;
-	private double peso;
-	public Entrenamiento(Date fecha, String nombre,int repeticiones,int series,double peso) {
+	private ArrayList<Double> peso;
+	public Entrenamiento(Date fecha, String nombre,ArrayList<Integer> repeticiones,int series,ArrayList<Double> peso) {
 		this.fecha=fecha;
 		this.nombre=nombre;
 		this.repeticiones=repeticiones;
@@ -20,10 +22,10 @@ public class Entrenamiento {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	public int getRepeticiones() {
+	public ArrayList<Integer> getRepeticiones() {
 		return repeticiones;
 	}
-	public void setRepeticiones(int repeticiones) {
+	public void setRepeticiones(ArrayList<Integer> repeticiones) {
 		this.repeticiones = repeticiones;
 	}
 	public int getSeries() {
@@ -32,16 +34,28 @@ public class Entrenamiento {
 	public void setSeries(int series) {
 		this.series = series;
 	}
-	public double getPeso() {
+	public ArrayList<Double> getPeso() {
 		return peso;
 	}
-	public void setPeso(double peso) {
+	public void setPeso(ArrayList<Double> peso) {
 		this.peso = peso;
 	}
 	public Date getFecha() {
 		return fecha;
 	}
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
+	@Override
+	public String toString() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		String r = "";
+		String p = "";
+		for(Integer rep : repeticiones) {
+			r = r + "-" + rep;
+		}
+		for(Double w : peso) {
+			p =  p + "-" + w;
+		}
+		r = r.substring(1);
+		p = p.substring(1);
+		return sdf.format(fecha) + "," + nombre + "," + r + ","+ series + "," + p ;
 	}
 }
