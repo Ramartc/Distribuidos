@@ -26,10 +26,10 @@ public class Servidor {
 
 					String usuario;
 					String contraseña;
-					dos.writeUTF("USUARIO: ");
+					dos.writeUTF("Introduce usuario: ");
 					
 					usuario=dis.readUTF();
-					dos.writeUTF("CONTRASEÑA: ");
+					dos.writeUTF("Introduce contraseña: ");
 					contraseña=dis.readUTF();
 					
 					Usuario u = buscarUsuario(usuario,contraseña);
@@ -69,7 +69,28 @@ public class Servidor {
 						case 2:							
 							break;
 						case 3:
-		
+							Date fechaIni3;
+							Date fechaFin3;
+							String nombreej;
+							SimpleDateFormat sdf3 = new SimpleDateFormat("dd-MM-yyyy");
+							dos.writeUTF("Introduce fecha inicio (dd-MM-yyyy): ");
+							
+							fechaIni3=sdf3.parse(dis.readUTF());
+							dos.writeUTF("Introduce fecha fin (dd-MM-yyyy): ");
+							fechaFin3=sdf3.parse(dis.readUTF());
+							dos.writeUTF("Introduce nombre ejercicio: ");
+							nombreej=dis.readUTF();
+							ArrayList<Entrenamiento> entrenos3 = buscarEntrenamientoNombre(u.getId(),fechaIni3,fechaFin3,nombreej);
+							if(entrenos3.size()==0) {
+								dos.writeUTF("No hay Entrenamientos para las fechas introducidas \r\n");
+							}
+							else {
+							dos.writeUTF("Te envio los datos para las gráficas de entrenamiento: ");
+							for(Entrenamiento e : entrenos3) {
+								dos.writeUTF(e.toString());
+							}
+							dos.writeUTF("Listo");
+							}
 							break;
 						case 4:
 							break;
@@ -204,7 +225,59 @@ public class Servidor {
 		}
 		return l;
 	}
-	
+	public static ArrayList<Entrenamiento> buscarEntrenamientoNombre(int id, Date fechaIni, Date fechaFin,String nombreEjercicio){
+		BufferedReader br = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		ArrayList<Entrenamiento> l= new ArrayList<>();
+		try {
+			br =new BufferedReader(new FileReader("bd/entrenamientos.csv"));
+			String line = br.readLine();//para saltarte cabeceera
+			line = br.readLine();
+			while (null!=line) {
+				 String [] partes = line.split(",");
+				 Date fecha =sdf.parse(partes[1]);
+				 if(Integer.parseInt(partes[0]) == id) {
+					 String nombre = partes[2];
+					 if(fechaIni.compareTo(fecha)<=0 && fechaFin.compareTo(fecha)>=0 && nombre.equals(nombreEjercicio)) {
+						
+						 String[] repeticiones = partes[3].split("-");
+						 ArrayList<Integer> lrep = new ArrayList<>();
+						 for(String r : repeticiones) {
+							 lrep.add(Integer.parseInt(r));
+						 }
+						 int series = Integer.parseInt(partes[4]);
+						 String[] pesos = partes[5].split("-");
+						 ArrayList<Double> lpesos = new ArrayList<>();
+						 for(String p : pesos) {
+							 lpesos.add(Double.parseDouble(p));
+						 }
+						 l.add(new Entrenamiento(fecha,nombre,lrep,series,lpesos));
+					 }
+				 }
+			
+					line=br.readLine();
+				
+			}
+		} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if(br!=null) {
+				try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}
+			
+		}
+		return l;
+	}
 	public static boolean buscarEntrenamientoExiste(int id, Date fechaEntrenamiento, String nombre){
 		BufferedReader br = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
