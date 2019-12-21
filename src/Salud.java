@@ -9,12 +9,12 @@ public class Salud {
 	private Date fecha;
 	private double peso;
 	private int pulsaciones;
-	private double altura; //en m
+	private double altura; //en metros
 	private double imc;
 	private ArrayList<Double> l;
 	
 	public Salud(Date fecha,double peso,int pulsaciones,double altura,double imc) {
-		this.setFecha(fecha);
+		this.fecha=fecha;
 		this.peso=peso;
 		this.pulsaciones=pulsaciones;
 		this.altura=altura;
@@ -50,5 +50,9 @@ public class Salud {
 	}
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
+	}
+	public String toString() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		return sdf.format(fecha) + "," + peso + "," + pulsaciones + ","+ altura + "," + imc ;
 	}
 }

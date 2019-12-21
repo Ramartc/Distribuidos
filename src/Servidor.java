@@ -67,6 +67,23 @@ public class Servidor {
 							}
 							break;
 						case 2:							
+							Date fechaIni2;
+							Date fechaFin2;
+							SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
+							dos.writeUTF("Introduce fecha inicio (dd-MM-yyyy): ");
+							
+							fechaIni2=sdf2.parse(dis.readUTF());
+							dos.writeUTF("Introduce fecha fin (dd-MM-yyyy): ");
+							fechaFin2=sdf2.parse(dis.readUTF());
+							ArrayList<Salud> salud = buscarSalud(u.getId(),fechaIni2,fechaFin2);
+							if(salud.size()==0) {
+								dos.writeUTF("No hay datos de salud para las fechas introducidas \r\n");
+							}
+							else {
+							for(Salud s : salud) {
+								dos.writeUTF(s.toString());
+							}
+							}
 							break;
 						case 3:
 							Date fechaIni3;
@@ -128,6 +145,34 @@ public class Servidor {
 							}
 							break;
 						case 6:
+							Date fecha6;
+							SimpleDateFormat sdf6 = new SimpleDateFormat("dd-MM-yyyy");
+							double peso;
+							int pulsaciones;
+							double altura;
+							double imc;
+							dos.writeUTF("Introduce fecha: ");
+							fecha6=sdf6.parse(dis.readUTF());
+							dos.writeUTF("Introduce peso: ");
+							peso=Double.parseDouble(dis.readUTF());
+							dos.writeUTF("Introduce pulsaciones: ");
+							pulsaciones=Integer.parseInt(dis.readUTF());
+							dos.writeUTF("Introduce altura: ");
+							altura=Double.parseDouble(dis.readUTF());								
+							imc=peso/altura*altura;
+							Salud s=new Salud(fecha6,peso,pulsaciones,altura,imc);
+							boolean existeSalud = buscarSaludExiste(u.getId(), s.getFecha());
+							if (existeSalud) {
+								dos.writeUTF("LOS DATOS DE SALUD YA EXISTE ");
+							}
+							else {
+							if(añadirSalud(u.getId(), s)){
+								dos.writeUTF("LOS DATOS DE SALUD SE HAN AÑADIDO ");
+							}
+							else {
+								dos.writeUTF("LOS DATOS DE SALUD NO SE HAN AÑADIDO");
+							}
+							}
 							break;
 						}
 						}while(elegir!=0);
@@ -324,6 +369,114 @@ public class Servidor {
 			br =new BufferedWriter(new FileWriter("bd/entrenamientos.csv",true));
 			br.write("\r\n"+id + "," + e.toString());
 			
+		    return true;
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		finally {
+			if(br!=null) {
+				try {
+				br.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			}
+		}
+		return false;
+
+	}
+	public static ArrayList<Salud> buscarSalud(int id, Date fechaIni2, Date fechaFin2){
+		BufferedReader br = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		ArrayList<Salud> l= new ArrayList<>();
+		try {
+			br =new BufferedReader(new FileReader("bd/salud.csv"));
+			String line = br.readLine();//para saltarte cabeceera
+			line = br.readLine();
+			while (null!=line) {
+				 String [] partes = line.split(",");
+				 Date fecha =sdf.parse(partes[1]);
+				 if(Integer.parseInt(partes[0]) == id) {
+					 if(fechaIni2.compareTo(fecha)<=0 && fechaFin2.compareTo(fecha)>=0) {
+						 double peso = Double.parseDouble(partes[2]);
+						 int pulsaciones = Integer.parseInt(partes[3]);
+						 double altura = Double.parseDouble(partes[4]);
+						 double imc = Double.parseDouble(partes[5]);
+						
+						 l.add(new Salud(fecha,peso,pulsaciones,altura,imc));
+					 }
+				 }
+			
+					line=br.readLine();
+				
+			}
+		} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if(br!=null) {
+				try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}
+			
+		}
+		return l;
+	}
+	public static boolean buscarSaludExiste(int id, Date fechaSalud){
+		BufferedReader br = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		
+		try {
+			br =new BufferedReader(new FileReader("bd/salud.csv"));
+			String line = br.readLine();//para saltarte cabeceera
+			line = br.readLine();
+			while (null!=line) {
+				 String [] partes = line.split(",");
+				 Date fecha =sdf.parse(partes[1]);
+				 if(Integer.parseInt(partes[0]) == id) {
+					 if(fechaSalud.compareTo(fecha)==0 ) {
+						return true;
+					 }
+				 }
+			
+					line=br.readLine();
+				
+			}
+		} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if(br!=null) {
+				try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}
+		}
+		return false;
+	}
+	//fecha es unico
+	public static boolean añadirSalud(int id, Salud s) {
+		BufferedWriter br = null;
+		try {
+			br =new BufferedWriter(new FileWriter("bd/salud.csv",true));
+			br.write("\r\n"+id + "," + s.toString());
 		    return true;
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
