@@ -25,20 +25,20 @@ public class Servidor {
 					System.out.println("SE HA CONECTADO UN CLIENTE");
 
 					String usuario;
-					String contraseña;
+					String contraseÃ±a;
 					dos.writeUTF("Introduce usuario: ");
 					
 					usuario=dis.readUTF();
-					dos.writeUTF("Introduce contraseña: ");
-					contraseña=dis.readUTF();
+					dos.writeUTF("Introduce contraseÃ±a: ");
+					contraseÃ±a=dis.readUTF();
 					
-					Usuario u = buscarUsuario(usuario,contraseña);
+					Usuario u = buscarUsuario(usuario,contraseÃ±a);
 					if(u != null) {
 //						dos.writeUTF("Bienvenido "+ u.getUser());
 						System.out.println("SE HA CONECTADO:"+  u.getUser());
 						int elegir;
 						do {
-						dos.writeUTF("Introduce una opción  \r\n "
+						dos.writeUTF("Introduce una opciÃ³n  \r\n "
 								+ "1.Devolver entrenamientos: \r\n"
 								+ "2.Devolver salud:  \r\n"
 								+ "3.Devolver grafica entrenamientos:  \r\n"
@@ -102,7 +102,7 @@ public class Servidor {
 								dos.writeUTF("No hay Entrenamientos para las fechas introducidas \r\n");
 							}
 							else {
-							dos.writeUTF("Te envio los datos para las gráficas de entrenamiento: ");
+							dos.writeUTF("Te envio los datos para las grÃ¡ficas de entrenamiento: ");
 							for(Entrenamiento e : entrenos3) {
 								dos.writeUTF(e.toString());
 							}
@@ -136,11 +136,11 @@ public class Servidor {
 								dos.writeUTF("EL ENTRENAMIENTO YA EXISTE ");
 							}
 							else {
-							if(añadirEntrenamiento(u.getId(), e)){
-								dos.writeUTF("EL ENTRENAMIENTO SE HA AÑADIDO ");
+							if(aÃ±adirEntrenamiento(u.getId(), e)){
+								dos.writeUTF("EL ENTRENAMIENTO SE HA AÃ‘ADIDO ");
 							}
 							else {
-								dos.writeUTF("EL ENTRENAMIENTO NO SE HA AÑADIDO");
+								dos.writeUTF("EL ENTRENAMIENTO NO SE HA AÃ‘ADIDO");
 							}
 							}
 							break;
@@ -159,18 +159,18 @@ public class Servidor {
 							pulsaciones=Integer.parseInt(dis.readUTF());
 							dos.writeUTF("Introduce altura: ");
 							altura=Double.parseDouble(dis.readUTF());								
-							imc=peso/altura*altura;
+							imc=peso/(altura*altura);
 							Salud s=new Salud(fecha6,peso,pulsaciones,altura,imc);
 							boolean existeSalud = buscarSaludExiste(u.getId(), s.getFecha());
 							if (existeSalud) {
 								dos.writeUTF("LOS DATOS DE SALUD YA EXISTE ");
 							}
 							else {
-							if(añadirSalud(u.getId(), s)){
-								dos.writeUTF("LOS DATOS DE SALUD SE HAN AÑADIDO ");
+							if(aÃ±adirSalud(u.getId(), s)){
+								dos.writeUTF("LOS DATOS DE SALUD SE HAN AÃ‘ADIDO ");
 							}
 							else {
-								dos.writeUTF("LOS DATOS DE SALUD NO SE HAN AÑADIDO");
+								dos.writeUTF("LOS DATOS DE SALUD NO SE HAN AÃ‘ADIDO");
 							}
 							}
 							break;
@@ -363,7 +363,7 @@ public class Servidor {
 		return false;
 	}
 	//fecha y nombre son unicos
-	public static boolean añadirEntrenamiento(int id, Entrenamiento e) {
+	public static boolean aÃ±adirEntrenamiento(int id, Entrenamiento e) {
 		BufferedWriter br = null;
 		try {
 			br =new BufferedWriter(new FileWriter("bd/entrenamientos.csv",true));
@@ -472,7 +472,7 @@ public class Servidor {
 		return false;
 	}
 	//fecha es unico
-	public static boolean añadirSalud(int id, Salud s) {
+	public static boolean aÃ±adirSalud(int id, Salud s) {
 		BufferedWriter br = null;
 		try {
 			br =new BufferedWriter(new FileWriter("bd/salud.csv",true));
