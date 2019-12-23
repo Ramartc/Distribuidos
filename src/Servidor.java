@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,26 +26,28 @@ public class Servidor {
 					System.out.println("SE HA CONECTADO UN CLIENTE");
 
 					String usuario;
-					String contraseña;
+					String contrasena;
 					dos.writeUTF("Introduce usuario: ");
 					
 					usuario=dis.readUTF();
-					dos.writeUTF("Introduce contraseña: ");
-					contraseña=dis.readUTF();
+					dos.writeUTF("Introduce contrasena: ");
+					contrasena=dis.readUTF();
 					
-					Usuario u = buscarUsuario(usuario,contraseña);
+					Usuario u = buscarUsuario(usuario,contrasena);
 					if(u != null) {
 //						dos.writeUTF("Bienvenido "+ u.getUser());
 						System.out.println("SE HA CONECTADO:"+  u.getUser());
 						int elegir;
 						do {
-						dos.writeUTF("Introduce una opción  \r\n "
+						dos.writeUTF("Introduce una opcion  \r\n "
 								+ "1.Devolver entrenamientos: \r\n"
 								+ "2.Devolver salud:  \r\n"
 								+ "3.Devolver grafica entrenamientos:  \r\n"
 								+ "4.Devolver grafica salud:  \r\n"
 								+ "5.Introducir entrenamiento:  \r\n"
-								+ "6.Introducir salud: ");
+								+ "6.Introducir salud: \r\n"
+								+ "7.Borrar entrenamiento:  \r\n"
+								+ "8.Borrar salud:  ");
 						elegir=Integer.parseInt(dis.readUTF());
 						switch (elegir){
 						case 1:
@@ -102,7 +105,7 @@ public class Servidor {
 								dos.writeUTF("No hay Entrenamientos para las fechas introducidas \r\n");
 							}
 							else {
-							dos.writeUTF("Te envio los datos para las gráficas de entrenamiento: ");
+							dos.writeUTF("Te envio los datos para las graficas de entrenamiento: ");
 							for(Entrenamiento e : entrenos3) {
 								dos.writeUTF(e.toString());
 							}
@@ -136,11 +139,11 @@ public class Servidor {
 								dos.writeUTF("EL ENTRENAMIENTO YA EXISTE ");
 							}
 							else {
-							if(añadirEntrenamiento(u.getId(), e)){
-								dos.writeUTF("EL ENTRENAMIENTO SE HA AÑADIDO ");
+							if(anadirEntrenamiento(u.getId(), e)){
+								dos.writeUTF("EL ENTRENAMIENTO SE HA ANADIDO ");
 							}
 							else {
-								dos.writeUTF("EL ENTRENAMIENTO NO SE HA AÑADIDO");
+								dos.writeUTF("EL ENTRENAMIENTO NO SE HA ANADIDO");
 							}
 							}
 							break;
@@ -166,12 +169,51 @@ public class Servidor {
 								dos.writeUTF("LOS DATOS DE SALUD YA EXISTE ");
 							}
 							else {
-							if(añadirSalud(u.getId(), s)){
-								dos.writeUTF("LOS DATOS DE SALUD SE HAN AÑADIDO ");
+							if(anadirSalud(u.getId(), s)){
+								dos.writeUTF("LOS DATOS DE SALUD SE HAN ANADIDO ");
 							}
 							else {
-								dos.writeUTF("LOS DATOS DE SALUD NO SE HAN AÑADIDO");
+								dos.writeUTF("LOS DATOS DE SALUD NO SE HAN ANADIDO");
 							}
+							}
+							break;
+						case 7:
+							Date fecha7;
+							SimpleDateFormat sdf7 = new SimpleDateFormat("dd-MM-yyyy");
+							String nombre7;
+							dos.writeUTF("Introduce fecha: ");
+							fecha7=sdf7.parse(dis.readUTF());
+							dos.writeUTF("Introduce nombre: ");
+							nombre7=dis.readUTF();
+							boolean existeEntrenamiento7 = buscarEntrenamientoExiste(u.getId(), fecha7, nombre7);
+							if (!existeEntrenamiento7) {
+								dos.writeUTF("EL ENTRENAMIENTO NO EXISTE ");
+							}
+							else{
+								if(borrarEntrenamiento(u.getId(), fecha7, nombre7)) {
+									dos.writeUTF("EL ENTRENAMIENTO SE HA BORRADO");
+								}
+								else {
+									dos.writeUTF("EL ENTRENAMIENTO NO SE HA BORRADO");//POR SI SALTA EXCEPCION
+								}
+							}
+							break;
+						case 8:
+							Date fecha8;
+							SimpleDateFormat sdf8 = new SimpleDateFormat("dd-MM-yyyy");
+							dos.writeUTF("Introduce fecha: ");
+							fecha8=sdf8.parse(dis.readUTF());
+							boolean existeSalud8 = buscarSaludExiste(u.getId(), fecha8);
+							if (!existeSalud8) {
+								dos.writeUTF("EL DATO DE SALUD NO EXISTE ");
+							}
+							else{
+								if(borrarSalud(u.getId(), fecha8)) {
+									dos.writeUTF("EL DATO DE SALUD SE HA BORRADO");
+								}
+								else {
+									dos.writeUTF("EL DATO DE SALUD NO SE HA BORRADO");//POR SI SALTA EXCEPCION
+								}
 							}
 							break;
 						}
@@ -363,7 +405,7 @@ public class Servidor {
 		return false;
 	}
 	//fecha y nombre son unicos
-	public static boolean añadirEntrenamiento(int id, Entrenamiento e) {
+	public static boolean anadirEntrenamiento(int id, Entrenamiento e) {
 		BufferedWriter br = null;
 		try {
 			br =new BufferedWriter(new FileWriter("bd/entrenamientos.csv",true));
@@ -472,7 +514,7 @@ public class Servidor {
 		return false;
 	}
 	//fecha es unico
-	public static boolean añadirSalud(int id, Salud s) {
+	public static boolean anadirSalud(int id, Salud s) {
 		BufferedWriter br = null;
 		try {
 			br =new BufferedWriter(new FileWriter("bd/salud.csv",true));
@@ -494,5 +536,109 @@ public class Servidor {
 		}
 		return false;
 
+	}
+	public static boolean borrarEntrenamiento(int id, Date fecha, String nombreEjercicio){
+		BufferedReader br = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		File file=null;
+		BufferedWriter bw=null;
+		boolean borrar =  false;
+		try {
+
+			bw =new BufferedWriter(new FileWriter("bd/copiaEntrenamientos.csv",true));
+			br =new BufferedReader(new FileReader("bd/entrenamientos.csv"));
+			String line = br.readLine();//para saltarte cabeceera
+			System.out.println(line);
+			bw.write(line);
+			bw.flush();
+			line = br.readLine();
+			while (null!=line) {
+				 String [] partes = line.split(",");
+				 Date f =sdf.parse(partes[1]);
+				 if(!(Integer.parseInt(partes[0]) == id && fecha.compareTo(f)==0 && nombreEjercicio.equals(partes[2]))) {
+					 bw.write("\r\n"+line);
+					 bw.flush();
+				}else
+				{
+					borrar = true;
+				}
+					line=br.readLine();
+				
+			}
+		} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if(br!=null) {
+				try {
+				br.close();
+				bw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}
+		}
+		file=new File("bd/entrenamientos.csv"); //abro el entrenamientos
+		file.delete();//borro fichero		
+		file=new File("bd/copiaEntrenamientos.csv");
+		file.renameTo(new File("bd/entrenamientos.csv"));//lo renombro
+		return borrar;
+	}
+	public static boolean borrarSalud(int id, Date fecha){
+		BufferedReader br = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		File file=null;
+		BufferedWriter bw=null;
+		boolean borrar =  false;
+		try {
+
+			bw =new BufferedWriter(new FileWriter("bd/copiaSalud.csv",true));
+			br =new BufferedReader(new FileReader("bd/salud.csv"));
+			String line = br.readLine();//para saltarte cabeceera
+			System.out.println(line);
+			bw.write(line);
+			bw.flush();
+			line = br.readLine();
+			while (null!=line) {
+				 String [] partes = line.split(",");
+				 Date f =sdf.parse(partes[1]);
+				 if(!(Integer.parseInt(partes[0]) == id && fecha.compareTo(f)==0 )) {
+					 bw.write("\r\n"+line);
+					 bw.flush();
+				}else
+				{
+					borrar = true;
+				}
+					line=br.readLine();
+				
+			}
+		} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if(br!=null) {
+				try {
+				br.close();
+				bw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}
+		}
+		file=new File("bd/salud.csv"); //abro el entrenamientos
+		file.delete();//borro fichero		
+		file=new File("bd/copiaSalud.csv");
+		file.renameTo(new File("bd/salud.csv"));//lo renombro
+		return borrar;
 	}
 }
