@@ -19,11 +19,11 @@ public class Cliente {
 		try (Socket c = new Socket("localhost", 8080);
 				//	BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
 				DataInputStream inSocket = new DataInputStream(c.getInputStream());
-//					DataInputStream infich = new DataInputStream(new FileInputStream(nombre));
-					DataOutputStream outSocket = new DataOutputStream(c.getOutputStream());
-					//Writer w = new OutputStreamWriter(c.getOutputStream());
-					)
-			{
+				//					DataInputStream infich = new DataInputStream(new FileInputStream(nombre));
+				DataOutputStream outSocket = new DataOutputStream(c.getOutputStream());
+				//Writer w = new OutputStreamWriter(c.getOutputStream());
+				)
+		{
 			boolean conexion=true;
 			String servidor;
 			Scanner entrada= new Scanner (System.in);
@@ -36,51 +36,77 @@ public class Cliente {
 					System.out.println(servidor);	
 					outSocket.writeUTF(entrada.next());
 				}
-				else if(servidor.contains("gráficas de entrenamiento")) {
+				else if(servidor.contains("graficas de entrenamiento")) {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 					ArrayList<Entrenamiento> l= new ArrayList<>();
 					servidor=inSocket.readUTF();
-						while (!servidor.equals("Listo")) {
-							 String [] partes = servidor.split(",");
-							 Date fecha;
-							try {
-								fecha = sdf.parse(partes[0]);
-							
-							 String nombre = partes[1];
-							 String[] repeticiones = partes[2].split("-");
-							 ArrayList<Integer> lrep = new ArrayList<>();
-									 for(String r : repeticiones) {
-										 lrep.add(Integer.parseInt(r));
-									 }
-									 int series = Integer.parseInt(partes[3]);
-									 String[] pesos = partes[4].split("-");
-									 ArrayList<Double> lpesos = new ArrayList<>();
-									 for(String p : pesos) {
-										 lpesos.add(Double.parseDouble(p));
-									 }
-									 l.add(new Entrenamiento(fecha,nombre,lrep,series,lpesos));
-									 servidor=inSocket.readUTF();
-									 } catch (ParseException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+					while (!servidor.equals("Listo")) {
+						String [] partes = servidor.split(",");
+						Date fecha;
+						try {
+							fecha = sdf.parse(partes[0]);
+
+							String nombre = partes[1];
+							String[] repeticiones = partes[2].split("-");
+							ArrayList<Integer> lrep = new ArrayList<>();
+							for(String r : repeticiones) {
+								lrep.add(Integer.parseInt(r));
 							}
+							int series = Integer.parseInt(partes[3]);
+							String[] pesos = partes[4].split("-");
+							ArrayList<Double> lpesos = new ArrayList<>();
+							for(String p : pesos) {
+								lpesos.add(Double.parseDouble(p));
+							}
+							l.add(new Entrenamiento(fecha,nombre,lrep,series,lpesos));
+							servidor=inSocket.readUTF();
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-				    	   graficaEntrenamiento grafica = new graficaEntrenamiento("Grafica Entrenamiento",l);
-				    	   grafica.pack();
-				           RefineryUtilities.centerFrameOnScreen(grafica);
-				           grafica.setVisible(true);
 					}
-					
+					graficaEntrenamiento grafica = new graficaEntrenamiento("Grafica Entrenamiento",l);
+					grafica.pack();
+					RefineryUtilities.centerFrameOnScreen(grafica);
+					grafica.setVisible(true);
+				}
+				else if(servidor.contains("graficas de salud")) {
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					ArrayList<Salud> l= new ArrayList<>();
+					servidor=inSocket.readUTF();
+					while (!servidor.equals("Listo")) {
+						String [] partes = servidor.split(",");
+						Date fecha;
+						try {
+							fecha = sdf.parse(partes[0]);
+
+							double peso = Double.parseDouble(partes[1]);
+							int pulsaciones = Integer.parseInt(partes[2]);
+							double altura = Double.parseDouble(partes[3]);
+							double imc = Double.parseDouble(partes[4]);
+
+							l.add(new Salud(fecha,peso,pulsaciones,altura,imc));
+							servidor=inSocket.readUTF();
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					graficaSalud grafica = new graficaSalud("Grafica Salud",l);
+					grafica.pack();
+					RefineryUtilities.centerFrameOnScreen(grafica);
+					grafica.setVisible(true);
+				}	
 				else {
 					System.out.println(servidor);							
 				}			
 			}
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

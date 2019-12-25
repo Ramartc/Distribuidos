@@ -28,61 +28,61 @@ import org.jfree.ui.RefineryUtilities;
  */
 public class graficaEntrenamiento extends ApplicationFrame {
 
-    /**
-     * Creates a new demo instance.
-     *
-     * @param title  the frame title.
-     */
-    public graficaEntrenamiento(final String title,ArrayList<Entrenamiento> l) {
+	/**
+	 * Creates a new demo instance.
+	 *
+	 * @param title  the frame title.
+	 */
+	public graficaEntrenamiento(final String title,ArrayList<Entrenamiento> l) {
 
-        super(title);
+		super(title);
 
-        final CategoryDataset dataset = createDataset(l);
+		final CategoryDataset dataset = createDataset(l);
 
-        // create the chart...
-        final JFreeChart chart = ChartFactory.createBarChart(
-            "Gráfico " + l.get(0).getNombre(),        // chart title
-            "Fecha",               // domain axis label
-            "Peso (kg)",                  // range axis label
-            dataset,                 // data
-            PlotOrientation.VERTICAL,
-            true,                     // include legend
-            true,                     // tooltips?
-            false                     // URL generator?  Not required...
-        );
+		// create the chart...
+		final JFreeChart chart = ChartFactory.createBarChart(
+				"Gráfico " + l.get(0).getNombre(),        // chart title
+				"Fecha",               // domain axis label
+				"Peso (kg)",                  // range axis label
+				dataset,                 // data
+				PlotOrientation.VERTICAL,
+				true,                     // include legend
+				true,                     // tooltips?
+				false                     // URL generator?  Not required...
+				);
 
-        chart.setBackgroundPaint(Color.white);
+		chart.setBackgroundPaint(Color.white);
 
-        final ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-        setContentPane(chartPanel);
+		final ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+		setContentPane(chartPanel);
 
-    }
+	}
 
-  
-    private CategoryDataset createDataset(ArrayList<Entrenamiento> l) {
-    	int maximo = 0;
-    	for(Entrenamiento e : l) {
-    		if(e.getSeries()>maximo) {
-    			maximo = e.getSeries();
-    		}
-    	}
- 
-        final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+	private CategoryDataset createDataset(ArrayList<Entrenamiento> l) {
+		int maximo = 0;
+		for(Entrenamiento e : l) {
+			if(e.getSeries()>maximo) {
+				maximo = e.getSeries();
+			}
+		}
+
+		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		SimpleDateFormat sdf3 = new SimpleDateFormat("dd-MM-yyyy");
-        for(int i = 1; i <= maximo;i++) {
-        	for(Entrenamiento e : l) {
-        			if(i <= e.getSeries()) {
-        				dataset.addValue(e.getPeso().get(i-1), i + " serie", sdf3.format(e.getFecha()));
-        			}
-			       	
-			       
-        	}
+		for(int i = 1; i <= maximo;i++) {
+			for(Entrenamiento e : l) {
+				if(i <= e.getSeries()) {
+					dataset.addValue(e.getPeso().get(i-1), i + " serie", sdf3.format(e.getFecha()));
+				}
 
-        }
-        return dataset;
 
-    }
+			}
 
-   
+		}
+		return dataset;
+
+	}
+
+
 }

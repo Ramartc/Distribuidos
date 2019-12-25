@@ -12,7 +12,7 @@ public class Salud {
 	private double altura; //en metros
 	private double imc;
 	private ArrayList<Double> l;
-	
+
 	public Salud(Date fecha,double peso,int pulsaciones,double altura,double imc) {
 		this.fecha=fecha;
 		this.peso=peso;
@@ -20,7 +20,7 @@ public class Salud {
 		this.altura=altura;
 		this.imc=imc;
 	}
-	
+
 	public double getPeso() {
 		return peso;
 	}
@@ -40,7 +40,7 @@ public class Salud {
 		this.altura = altura;
 	}
 	public double getImc() {
-		return this.peso/this.altura*this.altura;
+		return imc;
 	}
 	public void setImc(int imc) {
 		this.imc = imc;
