@@ -28,6 +28,22 @@ public class Servidor {
 					String usuario;
 					String contrasena;
 					boolean conectado=false;
+					Date fechaIni;
+					Date fechaFin;
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					ArrayList<Entrenamiento> entrenos=new ArrayList<>();
+					ArrayList<Salud> salud=new ArrayList<>();
+					String nombreej;
+					Date fecha;
+					ArrayList<Integer> lrep = new ArrayList<>();
+					int series;
+					ArrayList<Double> lpesos = new ArrayList<>();
+					double peso;
+					int pulsaciones;
+					double altura;
+					double imc;
+					boolean existeEntrenamiento;
+					boolean existeSalud;
 					int elegir;
 					do {
 						dos.writeUTF("Introduce una opcion  \r\n "
@@ -84,16 +100,12 @@ public class Servidor {
 									+ "8.Borrar salud:  ");
 							elegir2=Integer.parseInt(dis.readUTF());
 							switch (elegir2){
-							case 1:
-								Date fechaIni;
-								Date fechaFin;
-								SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+							case 1:						
 								dos.writeUTF("Introduce fecha inicio (dd-MM-yyyy): ");
-
 								fechaIni=sdf.parse(dis.readUTF());
 								dos.writeUTF("Introduce fecha fin (dd-MM-yyyy): ");
 								fechaFin=sdf.parse(dis.readUTF());
-								ArrayList<Entrenamiento> entrenos = buscarEntrenamiento(u.getId(),fechaIni,fechaFin);
+								entrenos = buscarEntrenamiento(u.getId(),fechaIni,fechaFin);
 								if(entrenos.size()==0) {
 									dos.writeUTF("No hay Entrenamientos para las fechas introducidas \r\n");
 								}
@@ -104,15 +116,12 @@ public class Servidor {
 								}
 								break;
 							case 2:							
-								Date fechaIni2;
-								Date fechaFin2;
-								SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
 								dos.writeUTF("Introduce fecha inicio (dd-MM-yyyy): ");
 
-								fechaIni2=sdf2.parse(dis.readUTF());
+								fechaIni=sdf.parse(dis.readUTF());
 								dos.writeUTF("Introduce fecha fin (dd-MM-yyyy): ");
-								fechaFin2=sdf2.parse(dis.readUTF());
-								ArrayList<Salud> salud = buscarSalud(u.getId(),fechaIni2,fechaFin2);
+								fechaFin=sdf.parse(dis.readUTF());
+								salud = buscarSalud(u.getId(),fechaIni,fechaFin);
 								if(salud.size()==0) {
 									dos.writeUTF("No hay datos de salud para las fechas introducidas \r\n");
 								}
@@ -122,62 +131,47 @@ public class Servidor {
 									}
 								}
 								break;
-							case 3:
-								Date fechaIni3;
-								Date fechaFin3;
-								String nombreej;
-								SimpleDateFormat sdf3 = new SimpleDateFormat("dd-MM-yyyy");
+							case 3:								
 								dos.writeUTF("Introduce fecha inicio (dd-MM-yyyy): ");
-
-								fechaIni3=sdf3.parse(dis.readUTF());
+								fechaIni=sdf.parse(dis.readUTF());
 								dos.writeUTF("Introduce fecha fin (dd-MM-yyyy): ");
-								fechaFin3=sdf3.parse(dis.readUTF());
+								fechaFin=sdf.parse(dis.readUTF());
 								dos.writeUTF("Introduce nombre ejercicio: ");
 								nombreej=dis.readUTF();
-								ArrayList<Entrenamiento> entrenos3 = buscarEntrenamientoNombre(u.getId(),fechaIni3,fechaFin3,nombreej);
-								if(entrenos3.size()==0) {
+								entrenos = buscarEntrenamientoNombre(u.getId(),fechaIni,fechaFin,nombreej);
+								if(entrenos.size()==0) {
 									dos.writeUTF("No hay Entrenamientos para las fechas introducidas \r\n");
 								}
 								else {
 									dos.writeUTF("Te envio los datos para las graficas de entrenamiento: ");
-									for(Entrenamiento e : entrenos3) {
+									for(Entrenamiento e : entrenos) {
 										dos.writeUTF(e.toString());
 									}
 									dos.writeUTF("Listo");
 								}
 								break;
 							case 4:
-								Date fechaIni4;
-								Date fechaFin4;
-								SimpleDateFormat sdf4 = new SimpleDateFormat("dd-MM-yyyy");
 								dos.writeUTF("Introduce fecha inicio (dd-MM-yyyy): ");
-
-								fechaIni4=sdf4.parse(dis.readUTF());
+								fechaIni=sdf.parse(dis.readUTF());
 								dos.writeUTF("Introduce fecha fin (dd-MM-yyyy): ");
-								fechaFin4=sdf4.parse(dis.readUTF());
-								ArrayList<Salud> salud2 = buscarSalud(u.getId(),fechaIni4,fechaFin4);
-								if(salud2.size()==0) {
+								fechaFin=sdf.parse(dis.readUTF());
+								salud = buscarSalud(u.getId(),fechaIni,fechaFin);
+								if(salud.size()==0) {
 									dos.writeUTF("No hay datos de salud para las fechas introducidas \r\n");
 								}
 								else {
 									dos.writeUTF("Te envio los datos para las graficas de salud: ");
-									for(Salud s : salud2) {
+									for(Salud s : salud) {
 										dos.writeUTF(s.toString());
 									}
 									dos.writeUTF("Listo");
 								}
 								break;
-							case 5:
-								Date fecha;
-								SimpleDateFormat sdf5 = new SimpleDateFormat("dd-MM-yyyy");
-								String nombre;
-								ArrayList<Integer> lrep = new ArrayList<>();
-								int series;
-								ArrayList<Double> lpesos = new ArrayList<>();
+							case 5:							
 								dos.writeUTF("Introduce fecha: ");
-								fecha=sdf5.parse(dis.readUTF());
+								fecha=sdf.parse(dis.readUTF());
 								dos.writeUTF("Introduce nombre: ");
-								nombre=dis.readUTF();
+								nombreej=dis.readUTF();
 								dos.writeUTF("Introduce series: ");
 								series=Integer.parseInt(dis.readUTF());
 								for(int i=1;i<=series;i++) {
@@ -186,8 +180,8 @@ public class Servidor {
 									dos.writeUTF("Introduce pesos(kg) de la " + i + " serie: ");
 									lpesos.add(Double.parseDouble(dis.readUTF()));
 								}
-								Entrenamiento e=new Entrenamiento(fecha,nombre,lrep,series,lpesos);
-								boolean existeEntrenamiento = buscarEntrenamientoExiste(u.getId(), e.getFecha(), e.getNombre());
+								Entrenamiento e=new Entrenamiento(fecha,nombreej,lrep,series,lpesos);
+								existeEntrenamiento = buscarEntrenamientoExiste(u.getId(), e.getFecha(), e.getNombre());
 								if (existeEntrenamiento) {
 									dos.writeUTF("EL ENTRENAMIENTO YA EXISTE ");
 								}
@@ -201,14 +195,8 @@ public class Servidor {
 								}
 								break;
 							case 6:
-								Date fecha6;
-								SimpleDateFormat sdf6 = new SimpleDateFormat("dd-MM-yyyy");
-								double peso;
-								int pulsaciones;
-								double altura;
-								double imc;
 								dos.writeUTF("Introduce fecha: ");
-								fecha6=sdf6.parse(dis.readUTF());
+								fecha=sdf.parse(dis.readUTF());
 								dos.writeUTF("Introduce peso: ");
 								peso=Double.parseDouble(dis.readUTF());
 								dos.writeUTF("Introduce pulsaciones: ");
@@ -216,8 +204,8 @@ public class Servidor {
 								dos.writeUTF("Introduce altura: ");
 								altura=Double.parseDouble(dis.readUTF());								
 								imc=peso/(altura*altura);
-								Salud s=new Salud(fecha6,peso,pulsaciones,altura,imc);
-								boolean existeSalud = buscarSaludExiste(u.getId(), s.getFecha());
+								Salud s=new Salud(fecha,peso,pulsaciones,altura,imc);
+								existeSalud = buscarSaludExiste(u.getId(), s.getFecha());
 								if (existeSalud) {
 									dos.writeUTF("LOS DATOS DE SALUD YA EXISTE ");
 								}
@@ -231,19 +219,16 @@ public class Servidor {
 								}
 								break;
 							case 7:
-								Date fecha7;
-								SimpleDateFormat sdf7 = new SimpleDateFormat("dd-MM-yyyy");
-								String nombre7;
 								dos.writeUTF("Introduce fecha: ");
-								fecha7=sdf7.parse(dis.readUTF());
+								fecha=sdf.parse(dis.readUTF());
 								dos.writeUTF("Introduce nombre: ");
-								nombre7=dis.readUTF();
-								boolean existeEntrenamiento7 = buscarEntrenamientoExiste(u.getId(), fecha7, nombre7);
-								if (!existeEntrenamiento7) {
+								nombreej=dis.readUTF();
+								existeEntrenamiento = buscarEntrenamientoExiste(u.getId(), fecha, nombreej);
+								if (!existeEntrenamiento) {
 									dos.writeUTF("EL ENTRENAMIENTO NO EXISTE ");
 								}
 								else{
-									if(borrarEntrenamiento(u.getId(), fecha7, nombre7)) {
+									if(borrarEntrenamiento(u.getId(), fecha, nombreej)) {
 										dos.writeUTF("EL ENTRENAMIENTO SE HA BORRADO");
 									}
 									else {
@@ -252,16 +237,14 @@ public class Servidor {
 								}
 								break;
 							case 8:
-								Date fecha8;
-								SimpleDateFormat sdf8 = new SimpleDateFormat("dd-MM-yyyy");
 								dos.writeUTF("Introduce fecha: ");
-								fecha8=sdf8.parse(dis.readUTF());
-								boolean existeSalud8 = buscarSaludExiste(u.getId(), fecha8);
-								if (!existeSalud8) {
+								fecha=sdf.parse(dis.readUTF());
+								existeSalud = buscarSaludExiste(u.getId(), fecha);
+								if (!existeSalud) {
 									dos.writeUTF("EL DATO DE SALUD NO EXISTE ");
 								}
 								else{
-									if(borrarSalud(u.getId(), fecha8)) {
+									if(borrarSalud(u.getId(), fecha)) {
 										dos.writeUTF("EL DATO DE SALUD SE HA BORRADO");
 									}
 									else {
@@ -553,7 +536,7 @@ public class Servidor {
 		return false;
 
 	}
-	public static ArrayList<Salud> buscarSalud(int id, Date fechaIni2, Date fechaFin2){
+	public static ArrayList<Salud> buscarSalud(int id, Date fechaIni, Date fechaFin){
 		BufferedReader br = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		ArrayList<Salud> l= new ArrayList<>();
@@ -565,7 +548,7 @@ public class Servidor {
 				String [] partes = line.split(",");
 				Date fecha =sdf.parse(partes[1]);
 				if(Integer.parseInt(partes[0]) == id) {
-					if(fechaIni2.compareTo(fecha)<=0 && fechaFin2.compareTo(fecha)>=0) {
+					if(fechaIni.compareTo(fecha)<=0 && fechaFin.compareTo(fecha)>=0) {
 						double peso = Double.parseDouble(partes[2]);
 						int pulsaciones = Integer.parseInt(partes[3]);
 						double altura = Double.parseDouble(partes[4]);
