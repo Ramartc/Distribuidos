@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="F:/tercero, 1 cuatri/SistemasDistribuidos/jcommon-1.0.18.jar"/>
 	<classpathentry kind="lib" path="F:/tercero, 1 cuatri/SistemasDistribuidos/jfreechart-1.5.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pollo/Downloads/jfreechart-0.9.16.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

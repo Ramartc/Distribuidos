@@ -1,8 +1,14 @@
 
 import java.awt.Color;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+
+import org.jfree.chart.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -26,7 +32,7 @@ import org.jfree.ui.RefineryUtilities;
  * from two {@link CategoryDataset} instances.
  *
  */
-public class graficaSalud extends ApplicationFrame {
+public class graficaSalud extends JFrame {
 
 	/**
 	 * Creates a new demo instance.
@@ -75,9 +81,17 @@ public class graficaSalud extends ApplicationFrame {
 		plot.setRenderer(1, renderer2);
 		plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
 		// OPTIONAL CUSTOMISATION COMPLETED.
-
+		
 		// add the chart to a panel...
 		final ChartPanel chartPanel = new ChartPanel(chart);
+
+//
+//		try {
+//			ChartUtilities.saveChartAsJPEG(new File("grafico.jpg"), chart, 500, 500);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 		setContentPane(chartPanel);
 
@@ -142,6 +156,5 @@ public class graficaSalud extends ApplicationFrame {
 	 *
 	 * @param args  ignored.
 	 */
-
 
 }

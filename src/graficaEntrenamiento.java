@@ -3,6 +3,8 @@ import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -26,7 +28,7 @@ import org.jfree.ui.RefineryUtilities;
  * from two {@link CategoryDataset} instances.
  *
  */
-public class graficaEntrenamiento extends ApplicationFrame {
+public class graficaEntrenamiento extends JFrame {
 
 	/**
 	 * Creates a new demo instance.

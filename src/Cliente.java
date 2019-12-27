@@ -16,13 +16,16 @@ import org.jfree.ui.RefineryUtilities;
 
 public class Cliente {
 	public static void main(String[] args) {
-		try (Socket c = new Socket("localhost", 8080);
-				//	BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
-				DataInputStream inSocket = new DataInputStream(c.getInputStream());
-				//					DataInputStream infich = new DataInputStream(new FileInputStream(nombre));
-				DataOutputStream outSocket = new DataOutputStream(c.getOutputStream());
-				//Writer w = new OutputStreamWriter(c.getOutputStream());
-				)
+		Socket c=null;
+		DataInputStream inSocket=null;
+		DataOutputStream outSocket =null;
+		try {
+			c = new Socket("localhost", 8080);
+				inSocket = new DataInputStream(c.getInputStream());
+				
+			outSocket = new DataOutputStream(c.getOutputStream());
+
+				
 		{
 			boolean conexion=true;
 			String servidor;
@@ -34,6 +37,7 @@ public class Cliente {
 				}
 				else if(servidor.contains("Introduce")) {
 					System.out.println(servidor);	
+					
 					outSocket.writeUTF(entrada.next());
 				}
 				else if(servidor.contains("graficas de entrenamiento")) {
@@ -69,6 +73,12 @@ public class Cliente {
 					grafica.pack();
 					RefineryUtilities.centerFrameOnScreen(grafica);
 					grafica.setVisible(true);
+					grafica.setDefaultCloseOperation(grafica.DISPOSE_ON_CLOSE);
+//					while(grafica.isActive()) {
+//						
+//					}
+//					grafica.dispose();
+//					grafica = null;
 				}
 				else if(servidor.contains("graficas de salud")) {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -93,20 +103,40 @@ public class Cliente {
 						}
 					}
 					graficaSalud grafica = new graficaSalud("Grafica Salud",l);
+					
 					grafica.pack();
+					
 					RefineryUtilities.centerFrameOnScreen(grafica);
 					grafica.setVisible(true);
+					grafica.setDefaultCloseOperation(grafica.DISPOSE_ON_CLOSE);
+//					while(grafica.isActive()) {
+//						
+//					}
+//					grafica.dispose();
+//					grafica = null;
 				}	
 				else {
 					System.out.println(servidor);							
 				}			
 			}
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
+		}	
+		}catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		finally {
+			if(c!=null) {
+				try {
+					c.close();
+					outSocket.close();
+					inSocket.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
+
+
 }

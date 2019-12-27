@@ -44,6 +44,7 @@ public class Servidor {
 					double imc;
 					boolean existeEntrenamiento;
 					boolean existeSalud;
+					int elegir2;
 					int elegir;
 					do {
 						dos.writeUTF("Introduce una opcion  \r\n "
@@ -87,7 +88,7 @@ public class Servidor {
 					if(u != null) {
 						//						dos.writeUTF("Bienvenido "+ u.getUser());
 						System.out.println("SE HA CONECTADO:"+  u.getUser());
-						int elegir2;
+						
 						do {
 							dos.writeUTF("Introduce una opcion  \r\n "
 									+ "1.Devolver entrenamientos: \r\n"
@@ -98,8 +99,10 @@ public class Servidor {
 									+ "6.Introducir salud: \r\n"
 									+ "7.Borrar entrenamiento:  \r\n"
 									+ "8.Borrar salud:  ");
+						
 							elegir2=Integer.parseInt(dis.readUTF());
 							switch (elegir2){
+
 							case 1:						
 								dos.writeUTF("Introduce fecha inicio (dd-MM-yyyy): ");
 								fechaIni=sdf.parse(dis.readUTF());
@@ -261,6 +264,7 @@ public class Servidor {
 						System.out.println("SE HA DESCONECTADO:" + u.getUser());
 					}
 					dos.writeUTF("close");
+					System.out.println("SE HA DESCONECTADO:" + u.getUser());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
