@@ -117,15 +117,16 @@ public class Cliente {
 		}
 		finally {
 			try {
+				if(c!=null) {
+					c.close();
+				}
 				if(inSocket!=null) {
 					inSocket.close();
 				}
 				if(outSocket!=null) {
 					outSocket.close();
 				}
-				if(c!=null) {
-					c.close();
-				}
+				
 			}catch(IOException e) {
 				e.printStackTrace();
 			}
