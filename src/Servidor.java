@@ -18,10 +18,8 @@ public class Servidor {
 		try (ServerSocket server = new ServerSocket(8080);){
 			while(true) {
 				try (Socket cliente = server.accept();
-						//BufferedReader br = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
 						DataInputStream dis = new DataInputStream(cliente.getInputStream());
 						DataOutputStream dos= new DataOutputStream(cliente.getOutputStream());
-						//Writer w = new OutputStreamWriter(cliente.getOutputStream());
 						){
 					System.out.println("SE HA CONECTADO UN CLIENTE");
 					Usuario u=null;
@@ -306,16 +304,13 @@ public class Servidor {
 			e.printStackTrace();
 		}
 		finally {
-			if(br!=null) {
-				try {
-					br.close();
-					bw.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			try {
+				if(br!=null)br.close();
+				if(bw!=null)bw.close();
 			}
-
+			catch(IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return u;
 	}
@@ -659,7 +654,6 @@ public class Servidor {
 			bw =new BufferedWriter(new FileWriter("bd/copiaEntrenamientos.csv",true));
 			br =new BufferedReader(new FileReader("bd/entrenamientos.csv"));
 			String line = br.readLine();//para saltarte cabeceera
-			System.out.println(line);
 			bw.write(line);
 			bw.flush();
 			line = br.readLine();
@@ -684,14 +678,12 @@ public class Servidor {
 			e.printStackTrace();
 		}
 		finally {
-			if(br!=null) {
-				try {
-					br.close();
-					bw.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			try {
+				if(br!=null)br.close();
+				if(bw!=null)bw.close();
+			}
+			catch(IOException e) {
+				e.printStackTrace();
 			}
 		}
 		file=new File("bd/entrenamientos.csv"); //abro el entrenamientos
@@ -711,7 +703,6 @@ public class Servidor {
 			bw =new BufferedWriter(new FileWriter("bd/copiaSalud.csv",true));
 			br =new BufferedReader(new FileReader("bd/salud.csv"));
 			String line = br.readLine();//para saltarte cabeceera
-			System.out.println(line);
 			bw.write(line);
 			bw.flush();
 			line = br.readLine();
@@ -736,14 +727,12 @@ public class Servidor {
 			e.printStackTrace();
 		}
 		finally {
-			if(br!=null) {
-				try {
-					br.close();
-					bw.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			try {
+				if(br!=null)br.close();
+				if(bw!=null)bw.close();
+			}
+			catch(IOException e) {
+				e.printStackTrace();
 			}
 		}
 		file=new File("bd/salud.csv"); //abro el entrenamientos

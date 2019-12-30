@@ -70,15 +70,10 @@ public class Cliente {
 						}
 					}
 					graficaEntrenamiento grafica = new graficaEntrenamiento("Grafica Entrenamiento",l);
-					grafica.pack();
-					RefineryUtilities.centerFrameOnScreen(grafica);
-					grafica.setVisible(true);
-					grafica.setDefaultCloseOperation(grafica.DISPOSE_ON_CLOSE);
-//					while(grafica.isActive()) {
-//						
-//					}
-//					grafica.dispose();
-//					grafica = null;
+					grafica.pack(); 
+					RefineryUtilities.centerFrameOnScreen(grafica); //poner la grafica centrada en la pantalla
+					grafica.setVisible(true); //hacerlo visible
+					grafica.setDefaultCloseOperation(grafica.DISPOSE_ON_CLOSE); //caracteristicas de cierre, el dispose mata la grafica
 				}
 				else if(servidor.contains("graficas de salud")) {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -109,11 +104,7 @@ public class Cliente {
 					RefineryUtilities.centerFrameOnScreen(grafica);
 					grafica.setVisible(true);
 					grafica.setDefaultCloseOperation(grafica.DISPOSE_ON_CLOSE);
-//					while(grafica.isActive()) {
-//						
-//					}
-//					grafica.dispose();
-//					grafica = null;
+
 				}	
 				else {
 					System.out.println(servidor);							
@@ -125,17 +116,21 @@ public class Cliente {
 			e.printStackTrace();
 		}
 		finally {
-			if(c!=null) {
-				try {
-					c.close();
-					outSocket.close();
+			try {
+				if(inSocket!=null) {
 					inSocket.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+				if(outSocket!=null) {
+					outSocket.close();
+				}
+				if(c!=null) {
+					c.close();
+				}
+			}catch(IOException e) {
+				e.printStackTrace();
 			}
 		}
+	
 	}
 
 
